@@ -46,8 +46,16 @@ def df2html(dataframe):
 
 
 class teamsChat:
+    print('teamsChat')
+
     def __init__(self, chat_ID):
-        self.chat_ID = chat_ID
+        if chat_ID == "portal_posse":
+            self.chat_ID = os.getenv('portal_posse')
+        elif chat_ID == "mainDataChat":
+            self.chat_ID = os.getenv('mainDataChat')
+        elif chat_ID == "code_collab":
+            self.chat_ID = os.getenv('code_collab')
+
         self.funcResult = getAuth()
         self.headers = {
                     'Accept': 'application/json',
@@ -124,5 +132,13 @@ class teamsChat:
         result = requests.get(url, headers=self.headers).json()
         # result = json.loads(result.text)
         sxJSON = json.dumps(result, indent=4, sort_keys=True, ensure_ascii=False)
-        print(sxJSON)
+        for data in result['value']:
+            print(data['topic'])
+            print(data['id'])
+            print()
 
+
+if __name__ == '__main__':
+    print('Running as Main')
+    teamchat = teamsChat(portal_posse)
+    teamchat.sendTable()
