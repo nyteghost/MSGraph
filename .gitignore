@@ -1,0 +1,13 @@
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+.env
+!/chatSystem/token_cache.bin
+!/chatSystem/dataframe.png
+!/MS-Teams/token_cache.bin
+!/doorKey.py
