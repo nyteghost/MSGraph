@@ -36,6 +36,15 @@ def df2img(csv_file, name_file):
     imgkit.from_string(html, name_file + ".png", options=options)
 
 
+def df2html(dataframe):
+    df = dataframe
+    df = df.style.set_table_styles([dict(selector='th', props=[('text-align', 'center'),('background-color', '#40466e'), ('color', 'white')])])
+    df.set_properties(**{'text-align': 'center'}).hide(axis='index')
+    pd.set_option('colheader_justify', 'center')
+    html = df.to_html()
+    return html
+
+
 class teamsChat:
     def __init__(self, chat_ID):
         self.chat_ID = chat_ID
@@ -85,6 +94,19 @@ class teamsChat:
                     "contentType": "image/png"
                 }
             ]
+        })
+        res = requests.post(url, headers=self.headers, data=payload)
+        print(res.text)
+
+    def sendTable(self, dataframe):
+        html = df2html(dataframe)
+        chatRoom = f"/chats/{self.chat_ID}/messages"
+        url = BETA+chatRoom
+        payload = json.dumps({
+            "body": {
+                "contentType": "html",
+                "content": html
+            }
         })
         res = requests.post(url, headers=self.headers, data=payload)
         print(res.text)

@@ -30,8 +30,24 @@ conn = sa.create_engine(connection_url)
 
 STID = ' 2168548'
 
-Fam_Lookup_Query = "EXEC [uspFamilyLookUp] " + STID
-Fam_Lookup = pd.read_sql(Fam_Lookup_Query, conn)
 
-teamchat = teamsChat(mainDataChat)
-teamchat.sendImage(Fam_Lookup)
+def callThatSQL(sqlCall):
+    if sqlCall == "Fam_Lookup":
+        Fam_Lookup_Query = "EXEC [uspFamilyLookUp] " + STID
+        Fam_Lookup = pd.read_sql(Fam_Lookup_Query, conn)
+        return Fam_Lookup
+
+    if sqlCall == "unreturned":
+        unreturned_query = ("EXEC [uspFamUnreturnedDevCheck] " + STID)
+        Unreturned = pd.read_sql(unreturned_query, conn)
+        return Unreturned
+
+    if sqlCall == "shipClearance":
+        shipmentClearanceQuery = "EXEC [uspShipmentClearanceCheck] " + str(STID)
+        shipmentClearance = pd.read_sql(shipmentClearanceQuery, conn)
+        return shipmentClearance
+
+
+sqlProc = callThatSQL('unreturned')
+teamchat = teamsChat(portal_posse)
+teamchat.sendImage(sqlProc)
