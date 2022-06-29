@@ -16,38 +16,47 @@ code_collab = os.getenv('code_collab')
 portal_posse = os.getenv('portal_posse')
 mainDataChat = os.getenv('mainDataChat')
 
-connection_string = (
-    "Driver={ODBC Driver 17 for SQL Server};"
-    "Server=" + (config["database"]["Server"]) + ";"
-    "Database=isolatedsafety;"
-    "UID=" + (config["database"]["UID"]) + ";"
-    "PWD=" + (config["database"]["PWD"]) + ";"
-)
-connection_url = URL.create(
-    "mssql+pyodbc", query={"odbc_connect": connection_string}
-)
-conn = sa.create_engine(connection_url)
 
-STID = ' 2168548'
+class sqlConnect:
+    def __init__(self, STID):
+        self.conn = None
+        self.STID = STID
+
+    def connection(self):
+        connection_string = (
+            "Driver={ODBC Driver 17 for SQL Server};"
+            "Server=" + (config["database"]["Server"]) + ";"
+            "Database=isolatedsafety;"
+            "UID=" + (config["database"]["UID"]) + ";"
+            "PWD=" + (config["database"]["PWD"]) + ";"
+        )
+        connection_url = URL.create(
+            "mssql+pyodbc", query={"odbc_connect": connection_string}
+        )
+        self.conn = sa.create_engine(connection_url)
+
+    def callThatSQL(self, sqlCall):
+        self.connection()
+        queryResult = None
+        if sqlCall == "Fam_Lookup":
+            Fam_Lookup_Query = "EXEC [uspFamilyLookUp] " + self.STID
+            Fam_Lookup = pd.read_sql(Fam_Lookup_Query, self.conn)
+            queryResult = Fam_Lookup
+
+        if sqlCall == "unreturned":
+            unreturned_query = ("EXEC [uspFamUnreturnedDevCheck] " + self.STID)
+            Unreturned = pd.read_sql(unreturned_query, self.conn)
+            queryResult = Unreturned
+
+        if sqlCall == "shipClearance":
+            shipmentClearanceQuery = "EXEC [uspShipmentClearanceCheck] " + str(self.STID)
+            shipmentClearance = pd.read_sql(shipmentClearanceQuery, self.conn)
+            queryResult = shipmentClearance
+        return queryResult
 
 
-def callThatSQL(sqlCall):
-    if sqlCall == "Fam_Lookup":
-        Fam_Lookup_Query = "EXEC [uspFamilyLookUp] " + STID
-        Fam_Lookup = pd.read_sql(Fam_Lookup_Query, conn)
-        return Fam_Lookup
+df = pd.DataFrame(np.random.randint(0, 100, size=(15, 4)), columns=list('ABCD'))
 
-    if sqlCall == "unreturned":
-        unreturned_query = ("EXEC [uspFamUnreturnedDevCheck] " + STID)
-        Unreturned = pd.read_sql(unreturned_query, conn)
-        return Unreturned
-
-    if sqlCall == "shipClearance":
-        shipmentClearanceQuery = "EXEC [uspShipmentClearanceCheck] " + str(STID)
-        shipmentClearance = pd.read_sql(shipmentClearanceQuery, conn)
-        return shipmentClearance
-
-
-sqlProc = callThatSQL('unreturned')
-teamchat = teamsChat(portal_posse)
-teamchat.sendImage(sqlProc)
+sqlProc = sqlConnect('2168548').callThatSQL('shipClearance')
+teamchat = teamsChat(mainDataChat)
+teamchat.sendTable(sqlProc)
