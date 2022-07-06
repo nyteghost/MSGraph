@@ -9,6 +9,7 @@ import imgkit
 import numpy as np
 from PIL import Image
 import base64
+from pretty_html_table import build_table
 
 load_dotenv()
 
@@ -38,7 +39,7 @@ def df2img(csv_file, name_file):
 
 def df2html(dataframe):
     df = dataframe
-    df = df.style.set_table_styles([dict(selector='th', props=[('text-align', 'center'),('background-color', '#40466e'), ('color', 'white')])])
+    df = df.style.set_table_styles([dict(selector='th', props=[('text-align', 'center'), ('background-color', '#40466e'), ('color', 'white')])])
     df.set_properties(**{'text-align': 'center'}).hide(axis='index')
     pd.set_option('colheader_justify', 'center')
     html = df.to_html()
@@ -55,7 +56,8 @@ class teamsChat:
             self.chat_ID = os.getenv('mainDataChat')
         elif chat_ID == "code_collab":
             self.chat_ID = os.getenv('code_collab')
-
+        elif chat_ID == "ccmChat":
+            self.chat_ID = os.getenv('ccmChat')
         self.funcResult = getAuth()
         self.headers = {
                     'Accept': 'application/json',
@@ -66,19 +68,14 @@ class teamsChat:
     def send(self, message):
         chatRoom = f"/chats/{self.chat_ID}/messages"
         url = BETA+chatRoom
-
-        if message == 2:
-            payload = json.dumps(message)
-            res = requests.post(url, headers=self.headers, data=payload)
-
-        elif message != "":
-            payload = json.dumps({
+        payload = json.dumps({
               "body": {
+                "contentType": "html",
                 "content": f"{message}"
-              }
-            })
-            res = requests.post(url, headers=self.headers, data=payload)
-            print(res.text)
+                }
+        })
+        res = requests.post(url, headers=self.headers, data=payload)
+        print(res.text)
 
     def sendImage(self, dataframe):
         df = dataframe
@@ -106,14 +103,15 @@ class teamsChat:
         res = requests.post(url, headers=self.headers, data=payload)
         print(res.text)
 
-    def sendTable(self, dataframe):
-        html = df2html(dataframe)
+    def sendTable(self, title, font_size, dataframe):
+        font = f'<font size="{font_size}"><center>{title}</center></font>'
+        table = build_table(dataframe, 'green_dark', font_size='14px', width='auth', odd_bg_color="black")
         chatRoom = f"/chats/{self.chat_ID}/messages"
         url = BETA+chatRoom
         payload = json.dumps({
             "body": {
                 "contentType": "html",
-                "content": html
+                "content": font+table
             }
         })
         res = requests.post(url, headers=self.headers, data=payload)
@@ -139,6 +137,9 @@ class teamsChat:
 
 
 if __name__ == '__main__':
+    failed_reason = ["This is a test", "This is a test2", "This is a test3"]
     print('Running as Main')
-    teamchat = teamsChat(portal_posse)
-    teamchat.sendTable()
+    teamchat = teamsChat('portal_posse')
+    df = pd.DataFrame(np.random.randn(10, 5), columns=list('ABCDE'))
+    teamchat.sendTable(5, "MP Completion", df)
+
