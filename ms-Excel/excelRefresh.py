@@ -154,8 +154,8 @@ class excelAPI:
 
 excelApp = excelAPI()
 # excelApp.fileSearch('CURRENT - CCM Inventory Report - test.xlsx')
-# excelApp.getSiteStuff('scaatlcloud.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba')
-# excelApp.reqSiteSession('scaatlcloud.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81')
-# excelApp.getSiteExcelWorksheets('scaatlcloud.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274',)
-# excelApp.getSiteExcelWorksheetTable('scaatlcloud.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274', "Inventory Report")
-excelApp.site2RefreshAll('scaatlcloud.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274', "Inventory Report")
+# excelApp.getSiteStuff('<company>.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba')
+# excelApp.reqSiteSession('<company>.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81')
+# excelApp.getSiteExcelWorksheets('<company>.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274',)
+# excelApp.getSiteExcelWorksheetTable('<company>.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274', "Inventory Report")
+excelApp.site2RefreshAll('<company>.sharepoint.com,7e9431fd-b639-45ba-b499-4eba5ae6f941,53b2c865-3d29-4db7-b404-1dccd90421ba', '69c665ca-33c1-4444-9ed7-73257286ff81', '1274', "Inventory Report")
